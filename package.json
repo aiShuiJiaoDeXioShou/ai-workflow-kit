@@ -1,0 +1,24 @@
+{
+  "name": "ai-workflow-kit",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @ai-workflow-kit/desktop dev",
+    "tauri": "pnpm --filter @ai-workflow-kit/desktop tauri",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "lint": "pnpm -r --if-present lint",
+    "cargo:check": "pnpm --filter @ai-workflow-kit/desktop cargo:check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.8.4",
+    "typescript": "6.0.3"
+  }
+}

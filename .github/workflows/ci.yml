@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-rules:
+    name: Repository Rules
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate control files
+        run: |
+          set -euo pipefail
+          test -f goal.md
+          test -f progress.md
+          test -f AGENTS.md
+          test -d specs
+          test -d rules
+          test -f specs/10-initialization.md
+          test -f specs/11-project-rules-and-ci.md
+          test -f rules/comment-style.md
+          test -f rules/scaffolding.md
+          test -f rules/dependency-policy.md
+          test -f rules/react-ui.md
+          test -f rules/ci-cd.md
+          test -f rules/security.md
+          test -f rules/subagents.md
+
+      - name: Validate progress statuses
+        run: |
+          set -euo pipefail
+          awk '
+            /^- / && $0 !~ /^- (TODO|DOING|DONE|BLOCKED): / {
+              print "Invalid progress status: " $0
+              bad=1
+            }
+            END { exit bad ? 1 : 0 }
+          ' progress.md
+
+      - name: Validate DOING limit
+        run: |
+          set -euo pipefail
+          count="$(grep -c '^- DOING: ' progress.md || true)"
+          if [ "$count" -gt 1 ]; then
+            echo "Only one main-agent DOING task is allowed, found $count."
+            exit 1
+          fi
+
+      - name: Validate required rule phrases
+        run: |
+          set -euo pipefail
+          grep -q "中文风格" AGENTS.md
+          grep -q "第三方组件优先" AGENTS.md
+          grep -q "Vite React TypeScript" rules/scaffolding.md
+          grep -q "Radix UI" rules/dependency-policy.md
+          grep -q "Tauri" rules/ci-cd.md
+          grep -q "主线程干净" rules/subagents.md
+
+  node-quality:
+    name: Node Quality
+    runs-on: ubuntu-24.04
+    needs: repository-rules
+    if: ${{ hashFiles('package.json') != '' && hashFiles('pnpm-lock.yaml') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.8.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.12.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run available quality scripts
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { spawnSync } = require('node:child_process')
+          const { readFileSync } = require('node:fs')
+
+          const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+          const scripts = pkg.scripts ?? {}
+          const required = ['typecheck', 'lint', 'test']
+
+          for (const name of required) {
+            if (!scripts[name]) {
+              console.log(`skip ${name}: script not defined yet`)
+              continue
+            }
+
+            console.log(`run ${name}`)
+            const result = spawnSync('pnpm', ['run', name], { stdio: 'inherit' })
+            if (result.status !== 0) {
+              process.exit(result.status ?? 1)
+            }
+          }
+          NODE
+
+  rust-quality:
+    name: Rust Quality
+    runs-on: ubuntu-24.04
+    needs: repository-rules
+    if: ${{ hashFiles('apps/desktop/src-tauri/Cargo.toml') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Linux Tauri dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cargo check
+        run: cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
+
+      - name: Cargo test
+        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
+
+      - name: Cargo clippy
+        run: cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml -- -D warnings

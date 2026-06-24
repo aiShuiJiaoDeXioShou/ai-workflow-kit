@@ -1,0 +1,22 @@
+{
+  "name": "@ai-workflow-kit/agent-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "oxlint src"
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "oxlint": "1.71.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}

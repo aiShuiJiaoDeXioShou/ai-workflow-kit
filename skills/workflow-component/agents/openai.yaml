@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workflow Component"
+  short_description: "Generate trusted workflow components"
+  default_prompt: "Use $workflow-component to create a trusted workflow component for AI Workflow Kit."

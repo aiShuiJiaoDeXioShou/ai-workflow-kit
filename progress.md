@@ -1,0 +1,51 @@
+# Progress
+
+- DONE: Create repository control documents
+- DONE: Research reference projects and define initialization baseline
+- DONE: Add project rules, AGENTS, and CI/CD workflow baseline
+- DONE: Add subagent-first execution policy
+- DONE: Refine component SDK, skill, and first-party component specs
+- DONE: Scaffold desktop app shell
+- DONE: Add monorepo package layout with component-type directories
+- DONE: Add component SDK
+- DONE: Add Zod-source component schema validation
+- DONE: Add declarative component action definitions
+- DONE: Add FlowGram root workflow canvas
+- DONE: Add workflow component node
+- DONE: Add SQLite persistence
+- DONE: Add trusted component registry
+- DONE: Add component palette
+- DONE: Add drag-to-canvas flow
+- DONE: Add inspector panel
+- DONE: Add HTTP health monitor component
+- DONE: Add manual/file-source quota tracker component
+- DONE: Add Agent adapter launcher component
+- DONE: Add agent runtime adapter model
+- DONE: Add allowlisted CLI runner
+- DONE: Add app/runtime declarative action dispatcher
+- DONE: Add monitor.http.check runtime handler
+- DONE: Add quota.file.refresh runtime handler
+- DONE: Wire Agent launcher actions to agent runtime
+- DONE: Add run log drawer
+- DONE: Add runtime persistence
+- DONE: Add unknown component fallback
+- DONE: Add SDK tests
+- DONE: Add first-party component tests
+- DONE: Add persistence tests
+- DONE: Add canvas integration tests
+- DONE: Add agent runtime tests
+- DONE: Add interview-first workflow component Codex skill
+- DONE: Validate interview-generated trusted component end to end
+- DONE: Document local development commands
+- DONE: Refactor root canvas from tldraw to FlowGram free layout
+- DONE: Fix FlowGram drag capture and allow deleting Start/End nodes
+- DONE: Install Playwright and fix reliable component drag-to-canvas
+- DONE: Add panel minimizers and remove default Start/End nodes
+- DONE: Add editable first-party component inspector config
+- DONE: Update workbench palette to white and black
+- DONE: Wire component action buttons to runtime dispatcher
+- DONE: Move HTTP health checks to Tauri backend request command
+- DONE: Localize MVP UI, unify run log, and enable HTTP health interval checks
+- DONE: Register Codex local agent adapter
+- DONE: Fix canvas persistence across app restart
+- DONE: Fix close window canvas save error

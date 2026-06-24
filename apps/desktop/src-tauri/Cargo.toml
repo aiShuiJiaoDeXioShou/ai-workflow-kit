@@ -1,0 +1,30 @@
+[package]
+name = "ai-workflow-kit"
+version = "0.1.0"
+description = "Local-first AI workflow workbench"
+authors = ["Linghe"]
+edition = "2021"
+
+# Cargo manifest 字段说明见 https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# `_lib` 后缀用于避免 Windows 上二进制与库目标重名。
+name = "ai_workflow_kit_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlx = { version = "0.8.6", default-features = false, features = ["sqlite", "runtime-tokio", "macros", "migrate", "json", "uuid"] }
+tokio = { version = "=1.48.0", features = ["macros", "rt-multi-thread", "process", "io-util", "sync", "time"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+thiserror = "2"
+reqwest = { version = "0.13.4", default-features = false, features = ["rustls"] }
+
+[dev-dependencies]
+tempfile = "3"
